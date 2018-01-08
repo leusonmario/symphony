@@ -1,3 +1,26 @@
+
+sudo: required
 language: java
+
 jdk:
   - oraclejdk8
+
+
+script:
+  - mvn clean cobertura:cobertura -Dtest=apache#org -DfailIfNoTests=false
+
+before_deploy:
+- tar -zcvf coverage-result.tar.gz /home/travis/build/leusonmario/symphony/target/site/cobertura
+
+deploy:
+  provider: releases
+  api_key:
+    secure: "oavK9XLNTcYAGFbOkY8mo3woPgOL6/ld6JTmLOEwSBIPTaHt+GxvsPBEmn1cmejSRclc49mJwJnmj55FlQpQdcCMJYUpSCVd23iNSStBnNaTjKjwcr+JWOq0iFjKQ51HLM17YjePmGP7q8JjMDTSodKByQ0WLa8Sypeg6mAMa//g6+IZkfM4qQz4Cn3heT/o0isDwbwG8etLXq3LsR/Y8He93MdrjXURAknWnOERzsiZxJMWej1EDDRBK+JKEmcwQ8Y90ipfq76kZEyViQJl7W0G7+AfS63iIwUwQD2uNuwHhyl9fOpkcuud5YBJtxrWVpQrPdDNzyJtTCJkIX0k/djkYiAFhWP7cOBG9mqghWe21ig9OEiSCPRS8vWRs60O1sXbXthuLYiFHffCll+x57sZdIrsnIsgt0XEyW3xp40d8FTiBovqtKLoThZH7iPtkKUj22ajAX2uc3KDgRkjIpNa4rHTlRYhkGbnLuRPCQpxh9tJh3Q8pz/iq4X+McxqKKuWH/B+XdsQyLpZi2OD15lUCeo9EgIDkJK5ZeXnTYILJg2mkVT3MMDaN/wpX4yUjc8FQkMam33ZfckXRBuqpPtjWG8Dnpg5FBo5l9AOWQtE1eeZEG/wnp7J9xsH3CI3Y98NCmf0DcEhObAKZgSRI/u6QVt+DzRSDRB6pUyyl+0="
+
+
+  file: coverage-result.tar.gz
+  file_glob: true
+  overwrite: true
+  skip_cleanup: true
+  on:
+    tags: true
